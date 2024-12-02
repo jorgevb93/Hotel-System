@@ -1,0 +1,24 @@
+<div class="row justify-content-center m-5">
+
+    <div class="card border-danger shadow-lg w-75">
+
+        <div class="card-body">
+
+            <p>Quieres eliminar esta reservacion : ?</p> <br>
+            <p>Numero de Habitacion : {{ booking.roomNumber.number }} </p> <br>
+            <p>Nombre de Cliente : {{ booking.guest.user.first_name }} {{ booking.guest.user.last_name }}</p><br>
+            <p>desde {{ booking.startDate }} hasta {{ booking.endDate }}</p>
+
+            <form action="{% url 'deleteBooking' booking.id %}" method="post">
+                {% csrf_token %}
+                <a class="btn btn-info" href="{% url 'bookings' %}">Cancelar</a>
+
+                <input class="btn btn-danger" type="submit" value="Confirm">
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+&nbsp
