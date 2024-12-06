@@ -13,27 +13,44 @@ class Guest(models.Model):
     def __str__(self):
         return str(self.user)
 
+    def __init__(self, *args: any, **kwargs: any) -> None:
+        self._numOfBooking = 0
+        self._numOfDays = 0
+        self._numOfLastBookingDays = 0
+        self._currentRoom = 0
+        super().__init__(*args, **kwargs)
+    
+    @property
     def numOfBooking(self):
-        return Booking.objects.filter(guest=self).count()
+        return self._numOfBooking
 
+    @numOfBooking.setter    
+    def numOfBooking(self, value):
+        self._x = value
+
+    @property
     def numOfDays(self):
-        totalDay = 0
-        bookings = Booking.objects.filter(guest=self)
-        for b in bookings:
-            day = b.endDate - b.startDate
-            totalDay += int(day.days)
+        return self._numOfDays
+    
+    @numOfDays.setter
+    def numOfDays(self, value):
+        self._numOfDays = value
 
-        return totalDay
-
+    @property
     def numOfLastBookingDays(self):
-        try:
-            return int((Booking.objects.filter(guest=self).last().endDate - Booking.objects.filter(guest=self).last().startDate).days)
-        except:
-            return 0
+        return self._numOfLastBookingDays
+        
+    @numOfLastBookingDays.setter
+    def numOfLastBookingDays(self, value):
+        self._numOfLastBookingDays = value
 
+    @property
     def currentRoom(self):
-        booking = Booking.objects.filter(guest=self).last()
-        return booking.roomNumber
+        return self._currentRoom
+
+    @currentRoom.setter
+    def currentRoom(self, value):
+        self._currentRoom = value
 
 
 class Employee(models.Model):

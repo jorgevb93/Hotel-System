@@ -135,7 +135,24 @@ def guests(request):
         if len(topList) > 10:
             break
         else:
-            topList.append(Guest.objects.get(id=t.get("guest")))
+            guest = Guest.objects.get(id=t.get("guest"))
+            guestBookings = Booking.objects.filter(guest=guest)
+
+            guest.numOfBooking = guestBookings.count()
+
+            totalDay = 0
+            for b in guestBookings:
+                day = b.endDate - b.startDate
+                totalDay += int(day.days)
+
+            guest.numOfDays = totalDay
+
+            try:
+                guest.currentRoom = int((guestBookings.last().endDate - guestBookings.last().startDate).days)
+            except:
+                guest.currentRoom = 0
+
+            topList.append(guest)
 
     bookings = Booking.objects.all()
     fd = datetime.combine(date.today()-timedelta(days=30), datetime.min.time())
@@ -145,7 +162,24 @@ def guests(request):
     for b in bookings:
         if b.endDate >= fd.date() and b.startDate <= ld.date():
             if b.guest not in guests:
-                guests.append(b.guest)
+                guest = b.guest
+                guestBookings = Booking.objects.filter(guest=guest)
+                
+                guest.numOfBooking = guestBookings.count()
+
+                totalDay = 0
+                for b in guestBookings:
+                    day = b.endDate - b.startDate
+                    totalDay += int(day.days)
+
+                guest.numOfDays = totalDay
+
+                try:
+                    guest.currentRoom = int((guestBookings.last().endDate - guestBookings.last().startDate).days)
+                except:
+                    guest.currentRoom = 0
+
+                guests.append(guest)
 
     if request.method == "POST":
         if "filterDate" in request.POST:
